@@ -28,6 +28,9 @@ DAMAGE.
 #include "rnd_multipliers_32bit.h"
 #include "cudamat_kernels.cuh"
 
+#include <iostream>
+using namespace std;
+
 extern "C" {
 
 #include "cudamat.cuh"
@@ -343,7 +346,7 @@ int copy_bbox_to_host(cudamat_bbox* mat) {
   }
   return 0;
 }
-int copy_to_device_slice(cudamat* mat, int start, int end) {
+int copy_to_device_slice(cudamat* mat, const int start, const int end) {
     if (end <= start || end > mat->size[1])
       return ERROR_GENERIC;
 
@@ -358,9 +361,8 @@ int copy_to_device_slice(cudamat* mat, int start, int end) {
         if (err_code)
             return err_code;
     }
-
     cublasSetVector(len, sizeof(mat->data_host[0]), mat->data_host + offset, 1, mat->data_device + offset, 1);
-    
+
     if (check_cublas_error())
         return CUBLAS_ERROR;
 

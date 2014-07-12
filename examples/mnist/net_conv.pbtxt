@@ -1,0 +1,205 @@
+name: "mnist_net";
+seed: 42;
+max_iter: 100000;
+print_after: 1000;
+save_after: 10000;
+patch_size: 28;
+validate_after: 1000;
+reduce_lr_factor: 0.5;
+reduce_lr_num_steps: 6;
+reduce_lr_max: 10;
+reduce_lr_threshold: 0.0;
+checkpoint_dir: "./checkpoint_dir";
+display: false;
+display_after: 100;
+
+layer {
+  name: "input";
+  num_channels: 1;
+  is_input: true;
+  display: true;
+  dropprob: 0.2;
+}
+
+layer {
+  name: "hidden1_conv";
+  num_channels: 32;
+  activation: RECTIFIED_LINEAR;
+}
+
+layer {
+  name: "hidden1_max";
+  num_channels: 32;
+}
+
+layer {
+  name: "hidden1_rnorm"
+  num_channels: 32
+  activation: RECTIFIED_LINEAR
+}
+
+layer {
+  name: "hidden2_conv";
+  num_channels: 64;
+  activation: RECTIFIED_LINEAR;
+}
+
+layer {
+  name: "hidden2_max";
+  num_channels: 64;
+}
+
+layer {
+  name: "hidden2_rnorm"
+  num_channels: 64
+  activation: RECTIFIED_LINEAR
+}
+
+layer {
+  name: "hidden3"
+  num_channels: 512
+  dropprob: 0.4
+  activation: RECTIFIED_LINEAR
+}
+
+layer {
+  name: "output";
+  num_channels: 10;
+  activation: SOFTMAX;
+  is_output: true;
+}
+
+
+edge {
+  source: "input"
+  dest: "hidden1_conv"
+  edge_type: CONVOLUTIONAL
+  kernel_size: 5
+  stride : 1
+  padding: 1
+  shared_bias: true
+  initialization: DENSE_UNIFORM_SQRT_FAN_IN
+  init_wt: 1.0
+  init_bias: 0.0
+  weight_optimizer {
+    epsilon: 0.01
+    initial_momentum : 0.5
+    final_momentum : 0.9
+    momentum_transition_timescale : 2000 
+    l2_decay: 0.0005
+  }
+  bias_optimizer {
+    epsilon: 0.01
+    initial_momentum : 0.5
+    final_momentum : 0.9
+    momentum_transition_timescale : 2000 
+  }
+  partial_sum: 0
+}
+
+edge {
+  source: "hidden1_conv"
+  dest: "hidden1_max"
+  edge_type: MAXPOOL
+  kernel_size: 2
+  stride : 2
+  padding: 1
+}
+edge {
+  source: "hidden1_max"
+  dest: "hidden1_rnorm"
+  edge_type: RESPONSE_NORM
+  add_scale: 0.0005
+  pow_scale: 0.75
+  frac_of_filters_response_norm: 0.25
+}
+
+edge {
+  source: "hidden1_rnorm"
+  dest: "hidden2_conv"
+  edge_type: CONVOLUTIONAL
+  kernel_size: 3
+  stride : 1
+  padding: 0
+  shared_bias: true
+  initialization: DENSE_UNIFORM_SQRT_FAN_IN
+  init_wt: 1.0
+  init_bias: 1.0
+  weight_optimizer {
+    epsilon: 0.01
+    initial_momentum : 0.5
+    final_momentum : 0.9
+    momentum_transition_timescale : 2000 
+    l2_decay: 0.0005
+  }
+  bias_optimizer {
+    epsilon: 0.01
+    initial_momentum : 0.5
+    final_momentum : 0.9
+    momentum_transition_timescale : 2000 
+  }
+  partial_sum: 0
+}
+
+edge {
+  source: "hidden2_conv"
+  dest: "hidden2_max"
+  edge_type: MAXPOOL
+  kernel_size: 2
+  stride : 1
+  padding: 1
+}
+
+edge {
+  source: "hidden2_max"
+  dest: "hidden2_rnorm"
+  edge_type: RESPONSE_NORM
+  add_scale: 0.0005
+  pow_scale: 0.75
+  frac_of_filters_response_norm: 0.25
+}
+
+edge {
+  source: "hidden2_rnorm"
+  dest: "hidden3"
+  edge_type: FC
+  initialization: DENSE_UNIFORM_SQRT_FAN_IN
+  init_wt: 1.0
+  weight_optimizer {
+    epsilon: 0.01
+    initial_momentum : 0.5
+    final_momentum : 0.9
+    momentum_transition_timescale : 2000 
+    weight_norm_limit: 4
+    l2_decay: 0.0005
+  }
+  bias_optimizer {
+    epsilon: 0.01
+    initial_momentum : 0.5
+    final_momentum : 0.9
+    momentum_transition_timescale : 2000 
+  }
+}
+
+
+edge {
+  source: "hidden3"
+  dest: "output"
+  edge_type: FC
+  initialization: DENSE_UNIFORM_SQRT_FAN_IN
+  init_wt: 1.0
+  weight_optimizer {
+    epsilon: 0.01
+    initial_momentum : 0.5
+    final_momentum : 0.9
+    momentum_transition_timescale : 2000 
+    weight_norm_limit: 4
+    l2_decay: 0.0005
+  }
+  bias_optimizer {
+    epsilon: 0.01
+    initial_momentum : 0.5
+    final_momentum : 0.9
+    momentum_transition_timescale : 2000 
+  }
+}

@@ -33,6 +33,7 @@ void FCEdge::AllocateMemory(bool fprop_only) {
 
   AllocateMemoryFprop();
   if (!fprop_only) AllocateMemoryBprop();
+
 }
 
 void FCEdge::ComputeUp(Matrix& input, Matrix& output, bool overwrite) {

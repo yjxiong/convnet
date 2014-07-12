@@ -1,0 +1,9 @@
+digraph G {
+input [shape=box, label = "input\n 28 - 28 - 1 (0)"];
+hidden1 [shape=box, label = "hidden1\n 1 - 1 - 1024 (0)"];
+hidden2 [shape=box, label = "hidden2\n 1 - 1 - 1024 (0)"];
+output [shape=box, label = "output\n 1 - 1 - 10 (0)"];
+hidden1 -> input [dir="back", color=black, label="(0)"];
+hidden2 -> hidden1 [dir="back", color=black, label="(0)"];
+output -> hidden2 [dir="back", color=black, label="(0)"];
+}

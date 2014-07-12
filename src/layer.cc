@@ -265,6 +265,7 @@ void LinearLayer::ComputeDeriv() {
   int err_code = subtract_elementwise(state_.GetMat(), data_.GetMat(), deriv_.GetMat());
   if (err_code != 0) {
     cerr << "Error in compute deriv of linear unit." << endl;
+    cerr <<"at layer: "<< this->name_<<endl;
     exit(1);
   }
 }

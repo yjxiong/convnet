@@ -1,8 +1,8 @@
 ##################################
 # Set path to dependencies.
 # Path to CImg.
-HOME=.
-CIMG = $(HOME)/local/CImg-1.5.9
+HOME=/usr
+CIMG = $(HOME)/local/CImg
 
 
 # Path to protocol buffers, hdf5.
@@ -11,13 +11,14 @@ LIB=$(HOME)/local/lib
 LOCAL_BIN = $(HOME)/local/bin
 
 # CUDA.
-CUDA_INC=/pkgs_local/cuda-5.5/include
-CUDA_LIB=/pkgs_local/cuda-5.5/lib64
+CUDA_INC=/usr/local/cuda/include
+CUDA_LIB=/usr/local/cuda/lib64
+CUDA_BIN=/usr/local/cuda/bin
 #####################################
 
 #CXX = g++ -g -rdynamic
 CXX = g++
-NVCC = nvcc
+NVCC = $(CUDA_BIN)/nvcc
 
 SRC=src
 OBJ=obj

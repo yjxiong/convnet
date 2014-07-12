@@ -54,7 +54,9 @@ void Matrix::AllocateGPUMemory(const int rows, const int cols, const string& nam
     }
     if (GetNumEls() > 0) free_device_memory(&mat_);
     AllocateMainMemory(rows, cols);
+
     CopyToDevice();
+
     mat_t_ = mat_;
     mat_t_.is_trans = 1;
     //const int size = (rows * cols * sizeof(float)) >> 20;
@@ -161,6 +163,7 @@ void Matrix::Add(Matrix& m) {
 }
 
 void Matrix::CopyToDeviceSlice(const int start, const int end) {
+
   int err_code = copy_to_device_slice(&mat_, start, end);
   if (err_code != 0) {
     cerr << "Error copying matrix of size " << mat_.size[0] << " "
@@ -330,7 +333,9 @@ void Matrix::SetupCUDADevices(const vector<int>& boards) {
            << GetStringError(err_code) << endl;
     }
   }
+
   err_code = cublas_init();
+
   if (err_code != 0) {
     cerr << "Error initializing cublas!" << GetStringError(err_code) << endl;
     exit(1);
@@ -345,6 +350,7 @@ void Matrix::SetupCUDADevices(const vector<int>& boards) {
     temp_size_[i] = 0;
     ones_size_[i] = 128*256*256;
   }
+
   SetDevice(0);
 }
 
@@ -370,9 +376,12 @@ int Matrix::GetDevice() {
 }
 
 void Matrix::SetDevice(int gpu_id) {
+
   if (num_boards_ < 2) return;
   if (current_gpu_id_ == gpu_id) return;
+
   int err_code = cuda_set_device(boards_[gpu_id]);
+
   if (err_code != 0) {
     cerr << "Error setting device id! " << GetStringError(err_code) << endl;
     exit(1);

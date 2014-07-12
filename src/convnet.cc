@@ -9,6 +9,9 @@
 #include <chrono>
 #include <csignal>
 
+#include <iostream>
+using namespace std;
+
 using namespace std;
 ConvNet::ConvNet(const string& model_file):
   max_iter_(0), batch_size_(0), current_iter_(0),
@@ -25,7 +28,9 @@ ConvNet::ConvNet(const string& model_file):
   if (num_tstampts > 0) {
     timestamp_ = model_.timestamp(num_tstampts - 1);
   }
+
   BuildNet();  // Build a net using the connectivity specified in model_.
+
 }
 
 ConvNet::~ConvNet() {
@@ -116,11 +121,18 @@ void ConvNet::AllocateEdgeMemory(bool fprop_only) {
 
   if (timestamp_.empty()) {
     // Initialize randomly.
-    for (Edge* e: edges_) e->Initialize();
+
+    for (Edge* e: edges_) {
+
+    	e->Initialize();
+    }
+
   } else {
     // Initialize from a saved model.
+
     Load();
   }
+
 }
 
 void ConvNet::Sort() {
@@ -247,6 +259,7 @@ void ConvNet::SetupDataset(const string& train_data_config_file,
 
 void ConvNet::AllocateMemory(bool fprop_only) {
   AllocateLayerMemory();
+
   AllocateEdgeMemory(fprop_only);
 }
 

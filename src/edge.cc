@@ -99,6 +99,7 @@ void Edge::LoadParameters(hid_t file) {
 void Edge::Initialize() {
   // no op. Initialization done in derived classes.
   Matrix::SetDevice(gpu_id_);
+
 }
 
 void Edge::AllocateMemory(bool fprop_only) {

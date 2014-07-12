@@ -1,7 +1,9 @@
 #include "multigpu_convnet.h"
+#include <stdio.h>
 
 MultiGPUConvNet::MultiGPUConvNet(const string& model_file):
   ConvNet(model_file) {}
+
 
 void MultiGPUConvNet::Fprop(bool train) {
   int dst_layer_gpu_id, edge_gpu_id, src_layer_gpu_id;
