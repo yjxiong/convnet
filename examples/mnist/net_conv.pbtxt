@@ -34,24 +34,24 @@ layer {
 
 layer {
   name: "hidden1_rnorm"
-  num_channels: 32
+  num_channels: 32;
   activation: RECTIFIED_LINEAR
 }
 
 layer {
   name: "hidden2_conv";
-  num_channels: 64;
+  num_channels: 16;
   activation: RECTIFIED_LINEAR;
 }
 
 layer {
   name: "hidden2_max";
-  num_channels: 64;
+  num_channels: 16;
 }
 
 layer {
   name: "hidden2_rnorm"
-  num_channels: 64
+  num_channels: 16;
   activation: RECTIFIED_LINEAR
 }
 

@@ -9,6 +9,7 @@
 #include <chrono>
 #include <csignal>
 
+#include <ctime>
 #include <iostream>
 using namespace std;
 
@@ -432,17 +433,32 @@ void ConvNet::WriteLog(int current_iter, float time, float training_error) {
   WriteLog(current_iter, time, temp);
 }
 
-void ConvNet::WriteLog(int current_iter, float time, const vector<float>& training_error) {
+void ConvNet::WriteLog(int current_iter, float time_, const vector<float>& training_error) {
+
+	time_t     now = time(0);
+	    struct tm  tstruct;
+	    char       buf[80];
+	    tstruct = *localtime(&now);
+	    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+	    // for more information about date/time format
+	    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
   ofstream f(log_file_, ofstream::out | ofstream::app);
-  f << current_iter << " " << time;
+  f <<buf<<" "<< "iteration:"<< current_iter << " training time: " << time_<<" Accuracy:";
   for (const float& val: training_error) f << " " << val;
   f << endl;
   f.close();
 }
 
 void ConvNet::WriteValLog(int current_iter, const vector<float>& error) {
+	time_t     now = time(0);
+		    struct tm  tstruct;
+		    char       buf[80];
+		    tstruct = *localtime(&now);
+		    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+		    // for more information about date/time format
+		    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
   ofstream f(val_log_file_, ofstream::out | ofstream::app);
-  f << current_iter;
+  f <<buf<<" iteration:"<<current_iter<<" Accuracy:";
   for (const float& val: error) f << " " << val;
   f << endl;
   f.close();
